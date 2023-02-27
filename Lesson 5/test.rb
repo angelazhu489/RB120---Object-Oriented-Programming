@@ -1,66 +1,57 @@
-module Moveable
-	attr_accessor :speed, :heading
+class Customer; end
 
-	def range
-    @fuel_capacity * @fuel_efficiency
-  end
+class Order
+	def initialize
+		@burger = Burger.new
+		@side = Side.new
+		@drink = Drink.new
+	end
+	
+	def meal
+		[@burger, @side, @drink]
+	end
 end
 
-class WheeledVehicle
-	include Moveable
-
-  def initialize(tire_array, km_traveled_per_liter, liters_of_fuel_capacity)
-    @tires = tire_array
-    self.fuel_efficiency = km_traveled_per_liter
-    self.fuel_capacity = liters_of_fuel_capacity
-  end
-
-  def tire_pressure(tire_index)
-    @tires[tire_index]
-  end
-
-  def inflate_tire(tire_index, pressure)
-    @tires[tire_index] = pressure
-  end
+class MealItem
+	def initialize
+		@option = choose_option
+	end
+	def to_s
+		meal.map(&:to_s).join(', ')
+	end
+	
+	def self.to_s
+		self::OPTIONS[@option][:name]
+	end
 end
 
-class Auto < WheeledVehicle
-  def initialize
-    # 4 tires are various tire pressures
-    super([30,30,32,32], 50, 25.0)
-  end
+class Burger < MealItem
+  OPTIONS = {
+    '1' => { name: 'LS Burger', cost: 3.00 },
+    '2' => { name: 'LS Cheeseburger', cost: 3.50 },
+    '3' => { name: 'LS Chicken Burger', cost: 4.50 },
+    '4' => { name: 'LS Double Deluxe Burger', cost: 6.00 }
+  }
 end
 
-class Motorcycle < WheeledVehicle
-  def initialize
-    # 2 tires are various tire pressures
-    super([20,20], 80, 8.0)
-  end
+class Side < MealItem
+  OPTIONS = {
+    '1' => { name: 'Fries', cost: 0.99 },
+    '2' => { name: 'Onion Rings', cost: 1.50 }
+  }
 end
 
-class Seacraft
-  include Moveable
-  attr_reader :propeller_count, :hull_count
-
-  def initialize(num_propellers, num_hulls, fuel_efficiency, fuel_capacity)
-    @propeller_count = num_propellers
-    @hull_count = num_hulls
-    self.fuel_efficiency = fuel_efficiency
-    self.fuel_capacity = fuel_capacity
-  end
-
-	def range
-    super + 10
-  end
+class Drink < MealItem
+  OPTIONS = {
+    '1' => { name: 'Cola', cost: 1.50 },
+    '2' => { name: 'Lemonade', cost: 1.50 },
+    '3' => { name: 'Vanilla Shake', cost: 2.00 },
+    '4' => { name: 'Chocolate Shake', cost: 2.00 },
+    '5' => { name: 'Strawberry Shake', cost: 2.00 }
+  }
 end
 
-class Catamaran < Seacraft
-end
+# Nouns: customer, order, meal item, burger, side, drink
+# Verbs: place, total, choose option
 
-class Motorboat < Seacraft
-	def initialize(km_traveled_per_liter, liters_of_fuel_capacity)
-    super(1, 1, km_traveled_per_liter, liters_of_fuel_capacity)
-  end
-end
-
-p Seacraft.ancestors
+order = Order.new()
